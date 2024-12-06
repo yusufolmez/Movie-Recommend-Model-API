@@ -4,18 +4,29 @@ from flask_cors import CORS  # CORS modülünü ekleyin
 import pymysql
 import requests
 from datetime import datetime
+from dotenv import load_dotenv
+import os
 
+# .env dosyasını yükle
+load_dotenv()
+
+# Çevre değişkenlerini al
+API_KEY = os.getenv("API_KEY")
+DB_HOST = os.getenv("DB_HOST")
+DB_USER = os.getenv("DB_USER")
+DB_PASSWORD = os.getenv("DB_PASSWORD")
+DB_NAME = os.getenv("DB_NAME")
 # TMDb API Key
-API_KEY = '1ac1c652640394393d245daab04c06b2'
 
 # Veritabanı Bağlantısı
 def create_db_connection():
     return pymysql.connect(
-        host='localhost',
-        user='root',
-        password='Yusuf.6707',
-        database='movie_like'
+        host=os.getenv("DB_HOST"),
+        user=os.getenv("DB_USER"),
+        password=os.getenv("DB_PASSWORD"),
+        database=os.getenv("DB_NAME")
     )
+
 
 
 def get_movie_details_from_tmdb(movie_id):

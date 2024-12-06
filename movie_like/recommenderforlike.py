@@ -4,6 +4,19 @@ import gensim
 import pymysql
 import numpy as np
 import pandas as pd
+from dotenv import load_dotenv
+import os
+
+# .env dosyasını yükle
+load_dotenv()
+
+# Çevre değişkenlerini al
+API_KEY = os.getenv("API_KEY")
+DB_HOST = os.getenv("DB_HOST")
+DB_USER = os.getenv("DB_USER")
+DB_PASSWORD = os.getenv("DB_PASSWORD")
+DB_NAME = os.getenv("DB_NAME")
+# TMDb API Key
 
 # Özet vektörlerini veritabanına kaydetme fonksiyonu
 def save_summary_vectors_to_db(df, model, db_connection):
@@ -37,14 +50,16 @@ def get_vector_from_summary(summary, model):
         return np.zeros(model.vector_size)  # Eğer modelde olmayan kelimeler varsa, sıfır vektörü döndür
 
 
-# MySQL veritabanı bağlantısı için fonksiyon
+
+# Veritabanı Bağlantısı
 def create_db_connection():
     return pymysql.connect(
-        host='localhost',       # Veritabanı sunucu adı
-        user='root',            # Veritabanı kullanıcı adı
-        password='Yusuf.6707', # Veritabanı şifresi
-        database='movie_like'   # Veritabanı adı
+        host=os.getenv("DB_HOST"),
+        user=os.getenv("DB_USER"),
+        password=os.getenv("DB_PASSWORD"),
+        database=os.getenv("DB_NAME")
     )
+
 
 # Film vektörleri tablosunun yapısını oluşturma
 def create_table():
@@ -65,7 +80,7 @@ def main():
     df = pd.read_csv('../TMDB_movie_dataset_v11.csv')  # CSV dosyasının yolunu değiştirin
 
     # Eğitilmiş Word2Vec modelini .model uzantılı dosya ile yükleyin
-    model = gensim.models.Word2Vec.load('../word2vec_tmdb.model')  # .model uzantılı dosyayı yükleyin
+    model = gensim.models.Word2Vec.load('../Word2Vec/word2vec_tmdb.model')  # .model uzantılı dosyayı yükleyin
 
     # Veritabanı bağlantısını oluşturun
     db_connection = create_db_connection()
